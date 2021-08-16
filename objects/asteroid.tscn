@@ -1,0 +1,147 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://models/asteroidspec.png" type="Texture" id=1]
+[ext_resource path="res://models/asteroiddiff.png" type="Texture" id=2]
+[ext_resource path="res://models/asteroidnormal.png" type="Texture" id=3]
+[ext_resource path="res://models/asteroid_orig.mesh" type="ArrayMesh" id=4]
+[ext_resource path="res://objects/asteroid.cs" type="Script" id=5]
+[ext_resource path="res://textures/effects/flame_01.png" type="Texture" id=6]
+[ext_resource path="res://models/asteroid.mesh" type="ArrayMesh" id=7]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_texture = ExtResource( 2 )
+metallic = 0.5
+metallic_texture = ExtResource( 1 )
+roughness = 0.5
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 3 )
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+vertex_color_use_as_albedo = true
+params_blend_mode = 1
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 6 )
+
+[sub_resource type="QuadMesh" id=3]
+material = SubResource( 2 )
+
+[sub_resource type="Gradient" id=4]
+offsets = PoolRealArray( 0, 0.672619, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0.768627, 1, 1, 1, 0 )
+
+[sub_resource type="SphereShape" id=5]
+radius = 1.5
+
+[sub_resource type="Animation" id=6]
+resource_name = "explosao"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("model/CPUParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.4 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("model/CPUParticles2:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="asteroid" type="RigidBody" groups=[
+"asteroid",
+]]
+gravity_scale = 0.0
+contacts_reported = 2
+contact_monitor = true
+linear_damp = 0.0
+angular_damp = 0.0
+script = ExtResource( 5 )
+
+[node name="model" type="Spatial" parent="."]
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0 )
+
+[node name="rock_low002_Group58368002" type="MeshInstance" parent="model"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.28798, -7.20963, -1.00697 )
+mesh = ExtResource( 4 )
+material/0 = SubResource( 1 )
+
+[node name="CPUParticles" type="CPUParticles" parent="model"]
+transform = Transform( 0.666667, 0, 0, 0, 0.666667, 0, 0, 0, 0.666667, 0, 0, 0 )
+cast_shadow = 0
+emitting = false
+amount = 30
+lifetime = 0.35
+one_shot = true
+explosiveness = 0.8
+randomness = 1.0
+mesh = SubResource( 3 )
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+initial_velocity_random = 1.0
+damping = 5.0
+angle = 180.0
+angle_random = 1.0
+color_ramp = SubResource( 4 )
+
+[node name="CPUParticles2" type="CPUParticles" parent="model"]
+transform = Transform( 0.666667, 0, 0, 0, 0.666667, 0, 0, 0, 0.666667, 2.11782, -1.2468, 5.0375 )
+cast_shadow = 0
+emitting = false
+amount = 15
+lifetime = 0.4
+one_shot = true
+explosiveness = 0.8
+randomness = 1.0
+mesh = ExtResource( 7 )
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 15.0
+initial_velocity_random = 1.0
+angle = 360.0
+angle_random = 1.0
+color_ramp = SubResource( 4 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 5 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/explosao = SubResource( 6 )
+
+[connection signal="body_entered" from="." to="." method="_on_asteroid_body_entered"]
