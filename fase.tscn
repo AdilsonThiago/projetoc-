@@ -1,0 +1,103 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://objects/fighter01.tscn" type="PackedScene" id=1]
+[ext_resource path="res://textures/coal.png" type="Texture" id=2]
+[ext_resource path="res://hud.cs" type="Script" id=3]
+[ext_resource path="res://textures/jeremythomas.png" type="Texture" id=4]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+background_energy = 0.0
+ambient_light_color = Color( 1, 1, 1, 1 )
+ambient_light_energy = 0.25
+ambient_light_sky_contribution = 0.0
+
+[sub_resource type="SphereMesh" id=2]
+radius = 100.0
+height = 200.0
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+albedo_texture = ExtResource( 2 )
+uv1_scale = Vector3( 15, 15, 15 )
+
+[sub_resource type="SphereMesh" id=4]
+radius = 200.0
+height = 400.0
+
+[sub_resource type="SpatialMaterial" id=5]
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+params_cull_mode = 1
+albedo_texture = ExtResource( 4 )
+
+[node name="fase" type="Spatial"]
+
+[node name="hud" type="CanvasLayer" parent="."]
+pause_mode = 2
+script = ExtResource( 3 )
+Nave = NodePath("../fighter01")
+
+[node name="pontuacao" type="Label" parent="hud"]
+margin_left = 13.0
+margin_top = 16.0
+margin_right = 91.0
+margin_bottom = 30.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "Pontuação : 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ItemList" type="ItemList" parent="hud"]
+visible = false
+margin_left = 332.0
+margin_top = 111.0
+margin_right = 596.0
+margin_bottom = 379.0
+rect_scale = Vector2( 1.5, 1.5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="hud/ItemList"]
+margin_left = 78.6667
+margin_top = 245.333
+margin_right = 196.667
+margin_bottom = 265.333
+text = "Jogar novamente"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 1 )
+
+[node name="fighter01" parent="." groups=[
+"player",
+] instance=ExtResource( 1 )]
+Hud = NodePath("../hud")
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -130.793, 0, -203.687 )
+cast_shadow = 0
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="MeshInstance"]
+transform = Transform( -0.8479, 0, -0.530156, 0, 1, 0, 0.530156, 0, -0.8479, 0, 0, -1.52588e-05 )
+shadow_enabled = true
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.986675, 0.162706, 0, -0.162706, 0.986675, 0, 3.8506, 8.14322 )
+far = 400.0
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
+
+[connection signal="pressed" from="hud/ItemList/Button" to="hud" method="_on_Button_pressed"]
